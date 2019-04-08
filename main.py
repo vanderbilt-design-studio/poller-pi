@@ -30,7 +30,7 @@ async def send_status():
             logging.info(f'Sending update')
             await websocket.send(status_json_str)
             logging.info(f'Update complete, sleeping for a bit...')
-            await asyncio.sleep(3)
+            await asyncio.sleep(1)
 
 try:
     while True:
