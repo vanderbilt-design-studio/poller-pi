@@ -31,6 +31,7 @@ listener = PrinterListener()
 browser = ServiceBrowser(zeroconf, "_ultimaker._tcp.local.", listener)
 
 def printer_jsons() -> List[Dict[str, str]]:
+    global printers_by_name, credentials_dict
     printer_jsons: List[Dict[str, str]] = []
     printer: Printer
     for printer in list(printers_by_name.values()):
