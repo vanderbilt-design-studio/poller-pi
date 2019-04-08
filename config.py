@@ -1,4 +1,4 @@
-ultimaker_application_name = 'your-print-is-ready'
+ultimaker_application_name = 'design-studio'
 ultimaker_user_name = 'poller-pi'
 ultimaker_credentials_filename = 'credentials.json'
 server_address = "vanderbilt-design-studio.herokuapp.com"
