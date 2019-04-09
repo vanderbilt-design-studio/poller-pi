@@ -26,7 +26,7 @@ async def send_status():
     async with websockets.connect(server_uri, ssl=ssl_context) as websocket:
         while True:
             logging.info(f'Preparing update')
-            status_json_str: str = json.dumps({'printers': printer_jsons(), 'key': x_api_key})
+            status_json_str: str = json.dumps({'printers': printer_jsons(), 'sign': sign_json(), 'key': x_api_key})
             logging.info(f'Sending update')
             await websocket.send(status_json_str)
             logging.info(f'Update complete, sleeping for a bit...')
