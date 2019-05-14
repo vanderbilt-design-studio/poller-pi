@@ -4,7 +4,7 @@ idna==2.8
 ifaddr==0.1.6
 requests==2.21.0
 ultimaker-printer-api==0.0.4
-urllib3==1.24.1
+urllib3==1.24.2
 uuid==1.30
 websockets==7.0
 wiringpi==2.46.0
