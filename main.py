@@ -2,6 +2,7 @@ import asyncio
 import ssl
 import websockets
 import json
+import pprint
 
 from typing import Dict, List
 import socket
@@ -26,8 +27,9 @@ async def send_status():
     async with websockets.connect(server_uri, ssl=ssl_context) as websocket:
         while True:
             logging.info(f'Preparing update')
-            status_json_str: str = json.dumps({'printers': printer_jsons(), 'sign': sign_json(), 'key': x_api_key})
-            logging.info(f'Sending update')
+            status_json_dict = {'printers': printer_jsons(), 'sign': sign_json(), 'key': x_api_key}
+            status_json_str = json.dumps(status_json_dict)
+            logging.info(f'Sending update {pprint.pformat(status_json_dict)}')
             await websocket.send(status_json_str)
             logging.info(f'Update complete, sleeping for a bit...')
             await asyncio.sleep(1)
