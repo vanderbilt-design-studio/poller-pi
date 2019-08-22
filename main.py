@@ -29,7 +29,7 @@ async def send_status():
             logging.info(f'Preparing update')
             status_json_dict = {'printers': printer_jsons(), 'sign': sign_json(), 'key': x_api_key}
             status_json_str = json.dumps(status_json_dict)
-            logging.info(f'Sending update {pprint.pformat(status_json_dict)}')
+            logging.info(f'Sending update {pprint.pformat(status_json_dict, depth=3, compact=True)}')
             await websocket.send(status_json_str)
             logging.info(f'Update complete, sleeping for a bit...')
             await asyncio.sleep(1)
