@@ -21,7 +21,7 @@ class PrinterListener:
         info: ServiceInfo = zeroconf.get_service_info(type, name)
         printer = Printer(socket.inet_ntoa(info.address), info.port, Identity(ultimaker_application_name, ultimaker_user_name))
         if printer.get_system_guid() in credentials_dict:
-            printer.credentials = credentials_dict[printer.get_system_guid()]
+            printer.set_credentials(credentials_dict[printer.get_system_guid()])
         printers_by_name[name] = printer
         logging.info(f"Service {name} added with guid:{printer.get_system_guid()}")
 
