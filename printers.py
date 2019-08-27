@@ -2,7 +2,6 @@ from typing import Dict, List
 import logging
 import json
 import socket
-import requests
 
 from zeroconf import ServiceBrowser, Zeroconf, ZeroconfServiceTypes, ServiceInfo
 from ultimaker import Printer, CredentialsDict, Credentials, Identity
@@ -44,6 +43,6 @@ def printer_jsons() -> List[Dict[str, str]]:
                 logging.info(f'Did not see credentials for {printer.get_system_guid()} in credentials, adding and saving')
                 printer.save_credentials(credentials_dict)
                 credentials_dict.save()
-        except requests.exceptions.Timeout:
-            logging.warning(f'Timeout while getting info for printer {printer.get_system_guid()}, it may no longer exist: {e}')
+        except Exception as e:
+            logging.warning(f'Exception getting info for printer {printer.get_system_guid()}, it may no longer exist: {e}')
     return printer_jsons
