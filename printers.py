@@ -40,10 +40,10 @@ def printer_jsons() -> List[Dict[str, str]]:
             printer_jsons.append(printer_status_json)
 
             if printer.credentials is not None and printer.get_system_guid() not in credentials_dict:
-                logging.info(f'Did not see credentials  for {printer.get_system_guid()} in credentials, adding and saving')
+                logging.info(f'Did not see credentials for {printer.get_system_guid()} in credentials, adding and saving')
                 printer.save_credentials(credentials_dict)
                 credentials_dict.save()
         except Exception as e:
             logging.warning(f'Exception getting info for printer {printer.get_system_guid()}, it may no longer exist: {e}')
-            raise e
+            continue
     return printer_jsons
