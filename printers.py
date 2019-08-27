@@ -23,7 +23,7 @@ class PrinterListener:
         if printer.get_system_guid() in credentials_dict:
             printer.set_credentials(credentials_dict[printer.get_system_guid()])
         printers_by_name[name] = printer
-        logging.info(f"Service {name} added with guid:{printer.get_system_guid()}")
+        logging.info(f"Service {name} added with guid: {printer.get_system_guid()}")
 
 
 zeroconf = Zeroconf()
@@ -45,5 +45,4 @@ def printer_jsons() -> List[Dict[str, str]]:
                 credentials_dict.save()
         except Exception as e:
             logging.warning(f'Exception getting info for printer {printer.get_system_guid()}, it may no longer exist: {e}')
-            continue
     return printer_jsons
