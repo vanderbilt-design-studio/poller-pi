@@ -32,7 +32,7 @@ async def send_status():
             logging.info(f'Sending update {pprint.pformat(status_json_dict, depth=3, compact=True)}')
             await websocket.send(status_json_str)
             logging.info(f'Update complete, sleeping for a bit...')
-            await asyncio.sleep(1)
+            await asyncio.sleep(2)
 
 try:
     while True:
