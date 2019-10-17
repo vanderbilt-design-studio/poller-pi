@@ -39,6 +39,8 @@ try:
         try:
             asyncio.get_event_loop().run_until_complete(send_status())
         except Exception as serr:
+            if type(serr) is KeyboardInterrupt:
+                raise serr
             logging.warning(f"Exception while sending status, attempting to start again: {serr}")
 finally:
     zeroconf.close()

@@ -2,6 +2,8 @@ from typing import Dict, List
 import logging
 import json
 import socket
+import imagehash
+import base64
 
 from zeroconf import ServiceBrowser, Zeroconf, ZeroconfServiceTypes, ServiceInfo
 from ultimaker import Printer, CredentialsDict, Credentials, Identity
@@ -44,5 +46,7 @@ def printer_jsons() -> List[Dict[str, str]]:
                 printer.save_credentials(credentials_dict)
                 credentials_dict.save()
         except Exception as e:
+            if type(e) is KeyboardInterrupt:
+                raise e
             logging.warning(f'Exception getting info for printer {printer.get_system_guid()}, it may no longer exist: {e}')
     return printer_jsons
