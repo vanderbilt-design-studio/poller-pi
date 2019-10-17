@@ -1,11 +1,11 @@
-certifi==2018.11.29
+certifi==2019.9.11
 chardet==3.0.4
 idna==2.8
 ifaddr==0.1.6
-requests==2.21.0
-ultimaker-printer-api==0.0.4
-urllib3==1.24.2
+requests==2.22.0
+ultimaker-printer-api==0.0.5
+urllib3==1.25.6
 uuid==1.30
-websockets==7.0
+websockets==8.0.2
 wiringpi==2.46.0
-zeroconf==0.21.3
+zeroconf==0.23.0
