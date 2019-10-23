@@ -18,11 +18,11 @@ class Sign(NamedTuple):
     return cls(
         **{
             'switch': {
-                'one_on': gpiozero.Button(27),
-                'two_on': gpiozero.Button(17)
+                'one_on': gpiozero.Button('BCM:27'),
+                'two_on': gpiozero.Button('BCM:17')
             },
             # Use pull-down resistor for door pin; if sensor is disconnected, assume door is open.
-            'door': gpiozero.Button(18, pull_up=False)
+            'door': gpiozero.Button('BCM:18', pull_up=False)
         })
 
   def as_value_dict(self) -> Dict:

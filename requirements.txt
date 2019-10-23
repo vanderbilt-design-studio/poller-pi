@@ -17,3 +17,4 @@ uuid==1.30
 websockets==8.0.2
 yapf==0.28.0
 zeroconf==0.23.0
+RPi.GPIO=0.7.0
