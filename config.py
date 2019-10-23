@@ -1,6 +1,6 @@
 ultimaker_application_name = 'design-studio'
 ultimaker_user_name = 'poller-pi'
-ultimaker_credentials_filename = './credentials.json'
+ultimaker_credentials_filename = './credentials.shelve'
 server_address = "vanderbilt-design-studio.herokuapp.com"
 server_port = 443
 server_uri = "wss://{}:{}".format(server_address, server_port)

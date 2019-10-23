@@ -2,21 +2,21 @@ from typing import Dict, List
 import logging
 import json
 import socket
-import imagehash
 import base64
+import uuid
 
 from zeroconf import ServiceInfo
-from ultimaker import Printer, CredentialsDict, Identity
+from ultimaker import Printer, Credentials, Identity
+import imagehash
 
 from config import ultimaker_application_name, ultimaker_user_name, ultimaker_credentials_filename
 
 
 class PrinterListener:
 
-  def __init__(self):
+  def __init__(self, credentials_dict: Dict[str, Credentials]):
     self.printers_by_name: Dict[str, Printer] = {}
-    self.credentials_dict: CredentialsDict = CredentialsDict(
-        credentials_filename=ultimaker_credentials_filename)
+    self.credentials_dict: Dict[str, Credentials] = credentials_dict
 
   def remove_service(self, zeroconf, type, name):
     del self.printers_by_name[name]
@@ -27,12 +27,11 @@ class PrinterListener:
     if len(info.addresses) == 0:
       logging.warning(f"Service {name} added but had no IP address, cannot add")
       return
-    printer = Printer(
-        socket.inet_ntoa(info.addresses[0]), info.port,
-        Identity(ultimaker_application_name, ultimaker_user_name))
-    if printer.get_system_guid() in credentials_dict:
-      printer.set_credentials(credentials_dict[printer.get_system_guid()])
-    self.printers_by_name[name] = printer
+    address = socket.inet_ntoa(info.addresses[0])
+    identity = Identity(ultimaker_application_name, ultimaker_user_name)
+    credentials = self.credentials_dict.get(str(printer.get_system_guid()), None)
+    self.printers_by_name[name] = Printer(address, info.port, identity,
+                                          credentials)
     logging.info(f"Service {name} added with guid: {printer.get_system_guid()}")
 
   def printer_jsons(self) -> List[Dict[str, str]]:
@@ -43,13 +42,12 @@ class PrinterListener:
         printer_status_json: Dict[str, str] = printer.into_ultimaker_json()
         printer_jsons.append(printer_status_json)
 
-        if printer.credentials is not None and printer.get_system_guid(
-        ) not in self.credentials_dict:
+        if printer.credentials is not None and str(printer.get_system_guid(
+        )) not in self.credentials_dict:
           logging.info(
               f'Did not see credentials for {printer.get_system_guid()} in credentials, adding and saving'
           )
-          printer.save_credentials(self.credentials_dict)
-          self.credentials_dict.save()
+          self.credentials_dict[str(printer.get_system_guid())] = printer.credentials
       except Exception as e:
         if type(e) is KeyboardInterrupt:
           raise e
@@ -60,7 +58,15 @@ class PrinterListener:
 
 
 if __name__ == '__main__':
+  import shelve
   from zeroconf import ServiceBrowser, Zeroconf
   zeroconf = Zeroconf()
-  listener = PrinterListener()
+  shelf = shelve.open(ultimaker_credentials_filename)
+  listener = PrinterListener(shelf)
   browser = ServiceBrowser(zeroconf, "_ultimaker._tcp.local.", listener)
+  try:
+    input('Press enter to exit\n')
+  finally:
+    print('Exiting...')
+    shelf.close()
+    zeroconf.close()

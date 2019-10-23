@@ -6,11 +6,12 @@ import os
 import logging
 from typing import Dict, List
 import socket
+import shelve
 
 import websockets
 from zeroconf import ServiceBrowser, Zeroconf
 
-from config import logging_format, server_uri
+from config import logging_format, server_uri, ultimaker_credentials_filename
 from printers import PrinterListener
 from sign import Sign
 
@@ -24,7 +25,8 @@ ssl_context = ssl.create_default_context()
 sign_pins = Sign.setup()
 
 zeroconf = Zeroconf()
-listener = PrinterListener()
+shelf = shelve.open(ultimaker_credentials_filename)
+listener = PrinterListener(shelf)
 browser = ServiceBrowser(zeroconf, "_ultimaker._tcp.local.", listener)
 
 
@@ -43,6 +45,7 @@ async def send_status():
       )
       await websocket.send(status_json_str)
       logging.info(f'Update complete, sleeping for a bit...')
+      shelf.sync()
       await asyncio.sleep(SLEEP_TIME)
 
 
@@ -56,5 +59,6 @@ try:
       logging.warning(
           f"Exception while sending status, attempting to connect and send again: {serr}"
       )
-finally:
+finally
+  shelf.close()
   zeroconf.close()
