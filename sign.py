@@ -1,19 +1,40 @@
-import wiringpi
+from typing import Dict, NamedTuple, OrderedDict
+import platform
 
-def sign_setup():
-    wiringpi.wiringPiSetupGpio()
-    for input in [17, 18, 27]:
-        wiringpi.pinMode(input, wiringpi.INPUT)
-    for switch_pin in [17, 27]:
-        wiringpi.pullUpDnControl(switch_pin, wiringpi.PUD_DOWN)
+import gpiozero
+from gpiozero.pins.mock import MockFactory
+
+# Mock values on non-GPIO computers
+if platform.machine() in ['x86', 'x86_64', 'i386', 'i686']:
+    gpiozero.Device.pin_factory = MockFactory()
+
+class Sign(NamedTuple):
+    switch: Dict[str, gpiozero.Button]
+    door: gpiozero.Button
+
+    @classmethod
+    def setup(cls: 'Sign') -> 'Sign':
+        return cls(
+            **{
+                'switch': {
+                    'one_on': gpiozero.Button(27),
+                    'two_on': gpiozero.Button(17)
+                },
+                # Use pull-down resistor for door pin; if sensor is disconnected, assume door is open.
+                'door': gpiozero.Button(18, pull_up=False)
+            })
+
+    def as_value_dict(self) -> Dict:
+        def read_sensors(sensors):
+            if type(sensors) != gpiozero.Button:
+                return {
+                    key: read_sensors(sensor)
+                    for key, sensor in sensors.items()
+                }
+            return sensors.is_pressed
+
+        return read_sensors(self._asdict())
 
 
-
-def sign_json():
-    return {
-        'switch': {
-            'one_on': wiringpi.digitalRead(27),
-            'two_on': wiringpi.digitalRead(17),
-        },
-        'door': wiringpi.digitalRead(18)
-    }
+if __name__ == '__main__':
+    print(Sign.setup().as_value_dict())
