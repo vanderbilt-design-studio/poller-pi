@@ -4,6 +4,7 @@ import json
 import socket
 import base64
 import uuid
+import shelve
 
 from zeroconf import ServiceInfo
 from ultimaker import Printer, Credentials, Identity
@@ -14,9 +15,9 @@ from config import ultimaker_application_name, ultimaker_user_name, ultimaker_cr
 
 class PrinterListener:
 
-  def __init__(self, credentials_dict: Dict[str, Credentials]):
+  def __init__(self, credentials_dict: shelve.Shelf):
     self.printers_by_name: Dict[str, Printer] = {}
-    self.credentials_dict: Dict[str, Credentials] = credentials_dict
+    self.credentials_dict: shelve.Shelf = credentials_dict
 
   def remove_service(self, zeroconf, type, name):
     del self.printers_by_name[name]
@@ -48,6 +49,7 @@ class PrinterListener:
               f'Did not see credentials for {printer.get_system_guid()} in credentials, adding and saving'
           )
           self.credentials_dict[str(printer.get_system_guid())] = printer.credentials
+          self.credentials_dict.sync()
       except Exception as e:
         if type(e) is KeyboardInterrupt:
           raise e
@@ -58,7 +60,6 @@ class PrinterListener:
 
 
 if __name__ == '__main__':
-  import shelve
   from zeroconf import ServiceBrowser, Zeroconf
   zeroconf = Zeroconf()
   shelf = shelve.open(ultimaker_credentials_filename)
