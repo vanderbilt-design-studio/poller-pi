@@ -59,6 +59,6 @@ try:
       logging.warning(
           f"Exception while sending status, attempting to connect and send again: {serr}"
       )
-finally
+finally:
   shelf.close()
   zeroconf.close()
