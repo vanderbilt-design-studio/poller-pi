@@ -1,6 +1,6 @@
 #!/bin/bash
 SIGNAL=INT
-DURATION=5
+DURATION=10
 timeout -s $SIGNAL $DURATION ./run.sh
 if [ $? -eq 124 ]
 then
