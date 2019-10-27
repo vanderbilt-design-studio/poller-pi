@@ -30,7 +30,8 @@ class PrinterListener:
       return
     address = socket.inet_ntoa(info.addresses[0])
     identity = Identity(ultimaker_application_name, ultimaker_user_name)
-    credentials = self.credentials_dict.get(str(printer.get_system_guid()), None)
+    credentials = self.credentials_dict.get(
+        str(printer.get_system_guid()), None)
     self.printers_by_name[name] = Printer(address, info.port, identity,
                                           credentials)
     logging.info(f"Service {name} added with guid: {printer.get_system_guid()}")
@@ -43,12 +44,13 @@ class PrinterListener:
         printer_status_json: Dict[str, str] = printer.into_ultimaker_json()
         printer_jsons.append(printer_status_json)
 
-        if printer.credentials is not None and str(printer.get_system_guid(
-        )) not in self.credentials_dict:
+        if printer.credentials is not None and str(
+            printer.get_system_guid()) not in self.credentials_dict:
           logging.info(
               f'Did not see credentials for {printer.get_system_guid()} in credentials, adding and saving'
           )
-          self.credentials_dict[str(printer.get_system_guid())] = printer.credentials
+          self.credentials_dict[str(
+              printer.get_system_guid())] = printer.credentials
           self.credentials_dict.sync()
       except Exception as e:
         if type(e) is KeyboardInterrupt:
