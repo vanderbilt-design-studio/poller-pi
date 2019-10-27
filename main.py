@@ -48,11 +48,11 @@ async def send_status():
       shelf.sync()
       await asyncio.sleep(SLEEP_TIME)
 
-
+loop = asyncio.get_event_loop()
 try:
   while True:
     try:
-      asyncio.get_event_loop().run_until_complete(send_status())
+      loop.run_until_complete(send_status())
     except Exception as serr:
       if type(serr) is KeyboardInterrupt:
         raise serr
@@ -62,4 +62,3 @@ try:
 finally:
   shelf.close()
   zeroconf.close()
-  loop.close()
