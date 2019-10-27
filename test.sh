@@ -1,0 +1,12 @@
+#!/bin/bash
+SIGNAL=INT
+DURATION=5
+timeout -s $SIGNAL $DURATION ./run.sh
+if [ $? -eq 124 ]
+then
+    echo 'Success! Program timed out (meaning it ran for the full duration), exiting with code 0'
+    exit 0
+else
+    echo 'Program may have failed, exiting with program status'
+    exit $?
+fi
