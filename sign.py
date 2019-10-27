@@ -1,4 +1,4 @@
-from typing import Dict, NamedTuple, OrderedDict
+from typing import Dict, NamedTuple
 import platform
 
 import gpiozero
