@@ -17,7 +17,7 @@ from sign import Sign
 
 logging.basicConfig(level=logging.INFO, format=logging_format)
 
-X_API_KEY = os.environ.get('X-API-KEY', '')
+X_API_KEY = os.environ['X_API_KEY']
 SLEEP_TIME: int = 2
 
 ssl_context = ssl.create_default_context()
@@ -62,3 +62,4 @@ try:
 finally:
   shelf.close()
   zeroconf.close()
+  loop.close()
