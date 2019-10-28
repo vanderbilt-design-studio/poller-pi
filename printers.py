@@ -30,10 +30,9 @@ class PrinterListener:
       return
     address = socket.inet_ntoa(info.addresses[0])
     identity = Identity(ultimaker_application_name, ultimaker_user_name)
-    credentials = self.credentials_dict.get(
-        str(printer.get_system_guid()), None)
-    self.printers_by_name[name] = Printer(address, info.port, identity,
-                                          credentials)
+    printer = Printer(address, info.port, identity)
+    printer.credentials = self.credentials_dict.get(str(printer.get_system_guid()), None)
+    self.printers_by_name[name] = printer
     logging.info(f"Service {name} added with guid: {printer.get_system_guid()}")
 
   def printer_jsons(self) -> List[Dict[str, str]]:
